@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Othello Special Rule</title>
+    <title>ヘンテコオセロ - 特殊ルール版</title>
     <style>
         body {
             background: #2e7d32;
@@ -14,11 +14,13 @@
             margin-top: 10px;
         }
         #rules {
-            margin: 10px;
-            font-size: 16px;
-            background: rgba(255,255,255,0.2);
-            padding: 10px;
+            margin: 10px auto;
+            padding: 12px;
+            width: 80%;
+            background: rgba(255,255,255,0.15);
             border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.6;
         }
         #score, #specialCount, #message {
             margin: 10px;
@@ -32,14 +34,22 @@
     </style>
 </head>
 <body>
-    <h1>オセロ - 特殊ルール版</h1>
-    <h2>ルール</h2>
+    <h1>ヘンテコオセロ 🎲</h1>
+    <h2>ルール説明</h2>
     <div id="rules">
-        - 石を置いて相手の石を挟むと、間の石が自分の色に変わります。<br>
-        - 2個以上の石を裏返した場合、<strong>特殊ルール</strong>が発動します。<br>
-        - 特殊ルールでは相手があなたの石を1つ選び、自分の色に変えます（さらにそこから裏返ります）。<br>
-        - 両者とも置けなくなった時点でゲーム終了し、石が多い方の勝利です。
+        これはちょっとヘンテコなオセロ！<br>
+        <br>
+        ▶ 石を置いて相手の石を挟むと、いつものように裏返る<br> 
+        ▶ ただし！<strong>2個以上</strong>の石を一気に裏返すと、<br>
+        相手に「リベンジチャンス」が発動！<br>
+        <br>
+        🔥 相手はあなたの石を1つ選んで、自分の色に変えちゃう...<br> 
+             さらに挟まれた石は裏返る！？<br> 
+        <br>
+        最後に盤面が埋まったら、石が多い方の勝ち！<br>
+        ちょっと理不尽なオセロをお楽しみあれ！
     </div>
+
     <div id="score"></div>
     <div id="specialCount"></div>
     <div id="message"></div>
