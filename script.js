@@ -86,12 +86,30 @@ function getFlips(x, y, p) {
     return total;
 }
 
-function hasValidMove(p) {
-    for (let y = 0; y < size; y++)
-        for (let x = 0; x < size; x++)
-            if (getFlips(x, y, p) > 0)
-                return true;
-    return false;
+function handleClick(e) {
+    if (gameOver) return;
+    let x = Math.floor(e.offsetX / cellSize);
+    let y = Math.floor(e.offsetY / cellSize);
+
+    if (specialMode && specialPlayer === 'W') {
+        if (board[y][x] === 'W') {
+            triggerRevenge(x, y, 'B');
+        }
+        return;
+    }
+
+    let flips = getFlips(x, y, player);
+    if (flips === 0) return;
+
+    applyMove(x, y, player);
+    drawBoard();
+
+    if (flips >= 2) {
+        specialPlayer = player;
+        triggerRevengePhase();
+    } else {
+        nextTurn();
+    }
 }
 
 function applyMove(x, y, p) {
@@ -112,44 +130,17 @@ function applyMove(x, y, p) {
     }
 }
 
-function handleClick(e) {
-    if (gameOver) return;
-    let x = Math.floor(e.offsetX / cellSize);
-    let y = Math.floor(e.offsetY / cellSize);
-
-    if (specialMode) {
-        if (specialPlayer === 'W' && board[y][x] === 'W') {
-            triggerRevenge(x, y, 'B');
-        }
-        return;
-    }
-
-    let flips = getFlips(x, y, player);
-    if (flips === 0) return;
-
-    applyMove(x, y, player);
-    drawBoard();
-
-    if (flips >= 2) {
-        triggerRevengePhase();
-        return;
-    }
-
-    nextTurn();
-}
-
 function triggerRevengePhase() {
     specialCount++;
     updateSpecialCount();
     specialMode = true;
-    specialPlayer = player;
     chainCount++;
 
     document.body.className = "";
     let level = chainCount >= 3 ? 3 : chainCount;
-    document.body.classList.add(`revenge-level-${level}-${player === 'B' ? 'black' : 'white'}`);
+    document.body.classList.add(`revenge-level-${level}-${specialPlayer === 'B' ? 'black' : 'white'}`);
 
-    if (player === 'B') {
+    if (specialPlayer === 'B') {
         let ownDiscs = [];
         for (let yy = 0; yy < size; yy++)
             for (let xx = 0; xx < size; xx++)
@@ -208,11 +199,11 @@ function aiMove() {
     drawBoard();
 
     if (flips >= 2) {
+        specialPlayer = 'W';
         triggerRevengePhase();
-        return;
+    } else {
+        nextTurn();
     }
-
-    nextTurn();
 }
 
 canvas.addEventListener("click", handleClick);
