@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ヘンテコオセロ - 特殊ルール（リベンジ）</title>
+    <title>ヘンテコオセロ - リベンジ</title>
     <style>
         body {
             background: #2e7d32;
@@ -22,10 +22,14 @@
             border-radius: 8px;
             font-size: 16px;
             line-height: 1.6;
+            position: relative;
+            z-index: 2;
         }
         #score, #specialCount, #message {
             margin: 10px;
             font-size: 18px;
+            position: relative;
+            z-index: 2;
         }
         canvas {
             background: #388e3c;
@@ -34,29 +38,25 @@
         }
 
         /* リベンジ演出 */
-        body.revenge-level-1-black {
-            background: repeating-linear-gradient(45deg, #000, #000 20px, #ff0000 20px, #ff0000 40px);
+        body.revenge-level-1-black, body.revenge-level-1-white {
+            background: #8B0000; /* dark red */
         }
-        body.revenge-level-2-black {
-            background: repeating-linear-gradient(45deg, #000, #000 40px, #ff0000 40px, #ff0000 80px);
+        body.revenge-level-2-black, body.revenge-level-2-white {
+            background: #FF0000; /* bright red */
         }
-        body.revenge-level-3-black {
-            background: repeating-linear-gradient(45deg, #ff0000, #ff0000 30px, #000 30px, #000 60px);
+        body.revenge-level-3-black, body.revenge-level-3-white {
+            background: #800080; /* purple */
+            animation: pulse 1s infinite;
         }
 
-        body.revenge-level-1-white {
-            background: repeating-linear-gradient(45deg, #fff, #fff 20px, #ff0000 20px, #ff0000 40px);
-        }
-        body.revenge-level-2-white {
-            background: repeating-linear-gradient(45deg, #fff, #fff 40px, #ff0000 40px, #ff0000 80px);
-        }
-        body.revenge-level-3-white {
-            background: repeating-linear-gradient(45deg, #ff0000, #ff0000 30px, #fff 30px, #fff 60px);
+        @keyframes pulse {
+            0%, 100% { filter: brightness(1); }
+            50%      { filter: brightness(1.8); }
         }
     </style>
 </head>
 <body>
-    <h1>ヘンテコオセロ 🎲</h1>
+    <h1>リベンジオセロ 🎲</h1>
     <h2>ルール説明</h2>
     <div id="rules">
         これはちょっとヘンテコなオセロ！<br>
