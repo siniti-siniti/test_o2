@@ -94,15 +94,6 @@ function hasValidMove(p) {
     return false;
 }
 
-function getValidMoves(p) {
-    let moves = [];
-    for (let y = 0; y < size; y++)
-        for (let x = 0; x < size; x++)
-            if (getFlips(x, y, p) > 0)
-                moves.push([x, y]);
-    return moves;
-}
-
 function applyMove(x, y, p) {
     let dirs = [[1,0],[0,1],[-1,0],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]];
     board[y][x] = p;
@@ -154,7 +145,7 @@ function triggerRevengePhase() {
     specialPlayer = player;
     chainCount++;
 
-    document.body.className = ""; 
+    document.body.className = "";
     let level = chainCount >= 3 ? 3 : chainCount;
     document.body.classList.add(`revenge-level-${level}-${player === 'B' ? 'black' : 'white'}`);
 
