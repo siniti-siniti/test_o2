@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Othello Special Rule</title>
+    <style>
+        body {
+            background: #2e7d32;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-top: 10px;
+        }
+        #score, #specialCount, #message {
+            margin: 10px;
+            font-size: 18px;
+        }
+        canvas {
+            background: #388e3c;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Othello with Special Rule</h1>
+    <div id="score">Black: 0  White: 0</div>
+    <div id="specialCount">Special Rules activated: 0</div>
+    <div id="message"></div>
+    <canvas id="board" width="480" height="480"></canvas>
+    <script src="script.js"></script>
+</body>
+</html>
