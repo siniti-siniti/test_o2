@@ -125,9 +125,10 @@ function handleClick(e) {
     let x = Math.floor(e.offsetX / cellSize);
     let y = Math.floor(e.offsetY / cellSize);
 
-    if (specialMode) {
-        if (board[y][x] === specialPlayer) {
-            board[y][x] = specialPlayer === 'B' ? 'W' : 'B';
+    if (specialMode && specialPlayer === 'W') {
+        if (board[y][x] === 'W') {
+            board[y][x] = 'B';
+            applyMove(x, y, 'B');
             specialMode = false;
             messageDiv.innerText = "";
             nextTurn();
@@ -147,7 +148,25 @@ function handleClick(e) {
         updateSpecialCount();
         specialMode = true;
         specialPlayer = player;
-        messageDiv.innerText = "SPECIAL RULE! Click your disc to flip it.";
+        if (player === 'B') {
+            // AIが黒の石を選んで裏返す
+            let ownDiscs = [];
+            for (let yy = 0; yy < size; yy++)
+                for (let xx = 0; xx < size; xx++)
+                    if (board[yy][xx] === 'B')
+                        ownDiscs.push([xx, yy]);
+            if (ownDiscs.length) {
+                let [fx, fy] = ownDiscs[Math.floor(Math.random() * ownDiscs.length)];
+                board[fy][fx] = 'W';
+                applyMove(fx, fy, 'W');
+                specialMode = false;
+                messageDiv.innerText = "";
+                nextTurn();
+                drawBoard();
+            }
+        } else {
+            messageDiv.innerText = "SPECIAL RULE! Click a white disc to flip it.";
+        }
         return;
     }
 
@@ -182,17 +201,12 @@ function aiMove() {
     if (flips >= 2) {
         specialCount++;
         updateSpecialCount();
-        let ownDiscs = [];
-        for (let yy = 0; yy < size; yy++)
-            for (let xx = 0; xx < size; xx++)
-                if (board[yy][xx] === 'W')
-                    ownDiscs.push([xx, yy]);
-        if (ownDiscs.length) {
-            let [fx, fy] = ownDiscs[Math.floor(Math.random() * ownDiscs.length)];
-            board[fy][fx] = 'B';
-            drawBoard();
-        }
+        specialMode = true;
+        specialPlayer = 'W';
+        messageDiv.innerText = "SPECIAL RULE! Click a white disc to flip it.";
+        return;
     }
+
     nextTurn();
 }
 
