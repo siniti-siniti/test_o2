@@ -2,14 +2,14 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ヘンテコオセロ - 特殊ルール版</title>
+    <title>ヘンテコオセロ - 特殊ルール（リベンジ）</title>
     <style>
         body {
             background: #2e7d32;
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
-            transition: background-color 0.3s;
+            transition: background 0.5s, filter 0.5s;
         }
         h1, h2 {
             margin-top: 10px;
@@ -33,14 +33,25 @@
             cursor: pointer;
         }
 
-        /* 特殊ルール発動時に背景を光らせる */
-        .flash {
-            animation: flash 0.6s;
+        /* リベンジ演出 */
+        body.revenge-level-1-black {
+            background: repeating-linear-gradient(45deg, #000, #000 20px, #ff0000 20px, #ff0000 40px);
         }
-        @keyframes flash {
-            0%   { background-color: #ffffff; }
-            50%  { background-color: #2e7d32; }
-            100% { background-color: #2e7d32; }
+        body.revenge-level-2-black {
+            background: repeating-linear-gradient(45deg, #000, #000 40px, #ff0000 40px, #ff0000 80px);
+        }
+        body.revenge-level-3-black {
+            background: repeating-linear-gradient(45deg, #ff0000, #ff0000 30px, #000 30px, #000 60px);
+        }
+
+        body.revenge-level-1-white {
+            background: repeating-linear-gradient(45deg, #fff, #fff 20px, #ff0000 20px, #ff0000 40px);
+        }
+        body.revenge-level-2-white {
+            background: repeating-linear-gradient(45deg, #fff, #fff 40px, #ff0000 40px, #ff0000 80px);
+        }
+        body.revenge-level-3-white {
+            background: repeating-linear-gradient(45deg, #ff0000, #ff0000 30px, #fff 30px, #fff 60px);
         }
     </style>
 </head>
