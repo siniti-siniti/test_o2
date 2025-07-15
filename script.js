@@ -29,7 +29,7 @@ function drawBoard() {
             ctx.fillStyle = "#388e3c";
             ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 
-            // ハイライトは通常ターンだけ
+            // 通常ターンのみハイライトを出す
             if (!specialMode) {
                 let flips = getFlips(x, y, player);
                 if (flips > 0) {
@@ -94,6 +94,7 @@ function handleClick(e) {
     let x = Math.floor(e.offsetX / cellSize);
     let y = Math.floor(e.offsetY / cellSize);
 
+    // リベンジ中
     if (specialMode && specialPlayer === 'W') {
         if (board[y][x] === 'W') {
             triggerRevenge(x, y, 'B');
@@ -101,6 +102,7 @@ function handleClick(e) {
         return;
     }
 
+    // 通常ターン
     let flips = getFlips(x, y, player);
     if (flips === 0) return;
 
@@ -184,9 +186,28 @@ function nextTurn() {
             messageDiv.innerText = "Game Over!";
             return;
         }
+        nextTurn(); // ←ここ重要！
+        return;
     }
     drawBoard();
     if (player === 'W') setTimeout(aiMove, 500);
+}
+
+function hasValidMove(p) {
+    for (let y = 0; y < size; y++)
+        for (let x = 0; x < size; x++)
+            if (getFlips(x, y, p) > 0)
+                return true;
+    return false;
+}
+
+function getValidMoves(p) {
+    let moves = [];
+    for (let y = 0; y < size; y++)
+        for (let x = 0; x < size; x++)
+            if (getFlips(x, y, p) > 0)
+                moves.push([x, y]);
+    return moves;
 }
 
 function aiMove() {
@@ -205,15 +226,6 @@ function aiMove() {
     } else {
         nextTurn();
     }
-}
-
-function getValidMoves(p) {
-    let moves = [];
-    for (let y = 0; y < size; y++)
-        for (let x = 0; x < size; x++)
-            if (getFlips(x, y, p) > 0)
-                moves.push([x, y]);
-    return moves;
 }
 
 canvas.addEventListener("click", handleClick);
