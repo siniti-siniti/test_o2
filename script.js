@@ -12,6 +12,7 @@ let specialMode = false;
 let specialPlayer = '';
 let gameOver = false;
 let specialCount = 0;
+let chainCount = 0;
 
 function initBoard() {
     board = Array.from({ length: size }, () => Array(size).fill('.'));
@@ -64,7 +65,7 @@ function updateScore() {
 }
 
 function updateSpecialCount() {
-    specialCountDiv.innerText = `Special Rules activated: ${specialCount}`;
+    specialCountDiv.innerText = `Revenge activated: ${specialCount}`;
 }
 
 function getFlips(x, y, p) {
@@ -125,14 +126,9 @@ function handleClick(e) {
     let x = Math.floor(e.offsetX / cellSize);
     let y = Math.floor(e.offsetY / cellSize);
 
-    if (specialMode && specialPlayer === 'W') {
-        if (board[y][x] === 'W') {
-            board[y][x] = 'B';
-            applyMove(x, y, 'B');
-            specialMode = false;
-            messageDiv.innerText = "";
-            nextTurn();
-            drawBoard();
+    if (specialMode) {
+        if (specialPlayer === 'W' && board[y][x] === 'W') {
+            triggerRevenge(x, y, 'B');
         }
         return;
     }
@@ -144,35 +140,55 @@ function handleClick(e) {
     drawBoard();
 
     if (flips >= 2) {
-        specialCount++;
-        updateSpecialCount();
-        document.body.classList.add("flash");
-        setTimeout(() => document.body.classList.remove("flash"), 600);
-
-        specialMode = true;
-        specialPlayer = player;
-        if (player === 'B') {
-            let ownDiscs = [];
-            for (let yy = 0; yy < size; yy++)
-                for (let xx = 0; xx < size; xx++)
-                    if (board[yy][xx] === 'B')
-                        ownDiscs.push([xx, yy]);
-            if (ownDiscs.length) {
-                let [fx, fy] = ownDiscs[Math.floor(Math.random() * ownDiscs.length)];
-                board[fy][fx] = 'W';
-                applyMove(fx, fy, 'W');
-                specialMode = false;
-                messageDiv.innerText = "";
-                nextTurn();
-                drawBoard();
-            }
-        } else {
-            messageDiv.innerText = "SPECIAL RULE! Click a white disc to flip it.";
-        }
+        triggerRevengePhase();
         return;
     }
 
     nextTurn();
+}
+
+function triggerRevengePhase() {
+    specialCount++;
+    updateSpecialCount();
+    specialMode = true;
+    specialPlayer = player;
+    chainCount++;
+
+    document.body.className = ""; 
+    let level = chainCount >= 3 ? 3 : chainCount;
+    document.body.classList.add(`revenge-level-${level}-${player === 'B' ? 'black' : 'white'}`);
+
+    if (player === 'B') {
+        let ownDiscs = [];
+        for (let yy = 0; yy < size; yy++)
+            for (let xx = 0; xx < size; xx++)
+                if (board[yy][xx] === 'B')
+                    ownDiscs.push([xx, yy]);
+        if (ownDiscs.length) {
+            let [fx, fy] = ownDiscs[Math.floor(Math.random() * ownDiscs.length)];
+            triggerRevenge(fx, fy, 'W');
+        }
+    } else {
+        messageDiv.innerText = "REVENGE! Click a white disc to flip it.";
+    }
+}
+
+function triggerRevenge(x, y, newColor) {
+    board[y][x] = newColor;
+    let flips = getFlips(x, y, newColor);
+    applyMove(x, y, newColor);
+    drawBoard();
+
+    if (flips >= 2) {
+        specialPlayer = newColor;
+        triggerRevengePhase();
+    } else {
+        chainCount = 0;
+        specialMode = false;
+        messageDiv.innerText = "";
+        document.body.className = "";
+        nextTurn();
+    }
 }
 
 function nextTurn() {
@@ -201,14 +217,7 @@ function aiMove() {
     drawBoard();
 
     if (flips >= 2) {
-        specialCount++;
-        updateSpecialCount();
-        document.body.classList.add("flash");
-        setTimeout(() => document.body.classList.remove("flash"), 600);
-
-        specialMode = true;
-        specialPlayer = 'W';
-        messageDiv.innerText = "SPECIAL RULE! Click a white disc to flip it.";
+        triggerRevengePhase();
         return;
     }
 
