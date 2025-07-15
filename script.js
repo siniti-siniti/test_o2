@@ -146,10 +146,12 @@ function handleClick(e) {
     if (flips >= 2) {
         specialCount++;
         updateSpecialCount();
+        document.body.classList.add("flash");
+        setTimeout(() => document.body.classList.remove("flash"), 600);
+
         specialMode = true;
         specialPlayer = player;
         if (player === 'B') {
-            // AIが黒の石を選んで裏返す
             let ownDiscs = [];
             for (let yy = 0; yy < size; yy++)
                 for (let xx = 0; xx < size; xx++)
@@ -201,6 +203,9 @@ function aiMove() {
     if (flips >= 2) {
         specialCount++;
         updateSpecialCount();
+        document.body.classList.add("flash");
+        setTimeout(() => document.body.classList.remove("flash"), 600);
+
         specialMode = true;
         specialPlayer = 'W';
         messageDiv.innerText = "SPECIAL RULE! Click a white disc to flip it.";
