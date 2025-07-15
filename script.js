@@ -29,12 +29,15 @@ function drawBoard() {
             ctx.fillStyle = "#388e3c";
             ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 
-            let flips = getFlips(x, y, player);
-            if (flips > 0) {
-                if (flips >= 5) ctx.fillStyle = "#90d490";
-                else if (flips >= 3) ctx.fillStyle = "#c6e6c6";
-                else ctx.fillStyle = "#e8f8e8";
-                ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            // ハイライトは通常ターンだけ
+            if (!specialMode) {
+                let flips = getFlips(x, y, player);
+                if (flips > 0) {
+                    if (flips >= 5) ctx.fillStyle = "#90d490";
+                    else if (flips >= 3) ctx.fillStyle = "#c6e6c6";
+                    else ctx.fillStyle = "#e8f8e8";
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
             }
 
             ctx.strokeStyle = "black";
@@ -105,8 +108,7 @@ function handleClick(e) {
     drawBoard();
 
     if (flips >= 2) {
-        specialPlayer = player;
-        triggerRevengePhase();
+        startRevenge(player);
     } else {
         nextTurn();
     }
@@ -130,10 +132,11 @@ function applyMove(x, y, p) {
     }
 }
 
-function triggerRevengePhase() {
+function startRevenge(triggeredBy) {
     specialCount++;
     updateSpecialCount();
     specialMode = true;
+    specialPlayer = triggeredBy;
     chainCount++;
 
     document.body.className = "";
@@ -162,11 +165,10 @@ function triggerRevenge(x, y, newColor) {
     drawBoard();
 
     if (flips >= 2) {
-        specialPlayer = newColor;
-        triggerRevengePhase();
+        startRevenge(newColor);
     } else {
-        chainCount = 0;
         specialMode = false;
+        chainCount = 0;
         messageDiv.innerText = "";
         document.body.className = "";
         nextTurn();
@@ -199,11 +201,19 @@ function aiMove() {
     drawBoard();
 
     if (flips >= 2) {
-        specialPlayer = 'W';
-        triggerRevengePhase();
+        startRevenge('W');
     } else {
         nextTurn();
     }
+}
+
+function getValidMoves(p) {
+    let moves = [];
+    for (let y = 0; y < size; y++)
+        for (let x = 0; x < size; x++)
+            if (getFlips(x, y, p) > 0)
+                moves.push([x, y]);
+    return moves;
 }
 
 canvas.addEventListener("click", handleClick);
